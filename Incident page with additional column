@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incidents Status Page</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .general-affectation {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .general-affectation.no-issue {
+        background-color: #d4edda; /* Verde claro cuando no hay problema */
+        border: 1px solid #c3e6cb; /* Verde claro */
+    }
+
+    .general-affectation.issue {
+        background-color: #f8d7da; /* Rojo claro cuando hay problema */
+        border: 1px solid #f5c6cb; /* Rojo claro */
+    }
+
+    .region {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .region h2 {
+        cursor: pointer;
+        margin: 0;
+        padding: 10px;
+        background-color: #000080; /* Azul oscuro */
+        color: white;
+        text-transform: uppercase;
+        border-radius: 5px;
+        flex: 1; /* Ocupa todo el espacio posible */
+    }
+
+    .incident-count {
+        font-size: 0.9em;
+        font-weight: bold;
+        padding: 5px 10px;
+        margin-left: 15px;
+        border-radius: 5px;
+        white-space: nowrap; /* Mantiene el texto en una sola línea */
+    }
+
+    /* Colores de contador según si hay incidentes o no */
+    .incident-count.active {
+        color: #dc3545; /* Rojo para resaltar incidentes */
+        background-color: #f8d7da; /* Fondo rojo claro */
+    }
+
+    .incident-count.no-incident {
+        color: #28a745; /* Verde para indicar que no hay problemas */
+        background-color: #d4edda; /* Fondo verde claro */
+    }
+
+    .country {
+        display: none; /* Oculta el contenido por defecto */
+        padding-left: 15px;
+        border-left: 3px solid #aaa;
+        margin-top: 5px;
+    }
+
+    .country.active {
+        display: block; /* Muestra el contenido cuando está activo */
+    }
+
+    .status {
+        font-weight: bold;
+    }
+    .status.ongoing {
+        color: red; /* Rojo para "Ongoing" */
+    }
+    .status.resolved {
+        color: green; /* Verde para "Resolved" */
+    }
+
+    /* Mensaje de operación normal en verde */
+    .no-incident-message {
+        color: #28a745;
+        font-weight: bold;
+    }
+  </style>
+  <script>
+    function toggleCountry(regionId) {
+        const countries = document.querySelectorAll(`#${regionId} .country`);
+        countries.forEach(country => country.classList.toggle('active'));
+    }
+
+    function updateIncidentCounts() {
+        const regions = document.querySelectorAll('.region');
+        regions.forEach(region => {
+            // Cuenta solo los divs .country con data-incident="true"
+            const incidentCountries = region.querySelectorAll('.country[data-incident="true"]').length;
+            const incidentCount = region.querySelector('.incident-count');
+
+            if (incidentCountries === 0) {
+                incidentCount.textContent = "Incidents: 0";
+                incidentCount.classList.add('no-incident');
+                incidentCount.classList.remove('active');
+            } else {
+                incidentCount.textContent = `Incidents: ${incidentCountries}`;
+                incidentCount.classList.add('active');
+                incidentCount.classList.remove('no-incident');
+            }
+        });
+    }
+
+    window.onload = updateIncidentCounts;
+  </script>
+</head>
+<body>
+
+  <h1>Incidents Status Page</h1>
+
+  <div class="general-affectation no-issue"> <!-- Cambia a "issue" si hay problemas -->
+    <h2>General Affectation</h2>
+    <p>No General Issues</p> <!-- Cambia este texto si hay un problema general -->
+  </div>
+
+  <div class="region" id="AMERICAS">
+    <h2 onclick="toggleCountry('AMERICAS')">AMERICAS</h2>
+    <span class="incident-count active"></span>
+    <div class="country" data-incident="true">
+      <p>
+        <strong>DOMINICAN REPUBLIC:</strong> <span class="status ongoing">Ongoing</span>
+      </p>
+      <p>Detalles: Delays processing orders confirmation.</p>
+      <ul>
+        <li>Correspondent: Banco BHD Leon S.A. 5535</li>
+        <li>Started: Thursday 11/07/2024 5:31AM PST</li>
+        <li>Status: Ongoing</li>
+        <li>Orders Affected: 100</li>
+        <li>Issue type: Exporting files delay</li>
+        <li>Estimated time: 2 hrs.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="region" id="EMEA">
+    <h2 onclick="toggleCountry('EMEA')">EMEA</h2>
+    <span class="incident-count no-incident">Incidents: 0</span>
+    <div class="country no-incident-message">
+      <p>All the correspondents are running at 100%</p>
+    </div>
+  </div>
+
+  <div class="region" id="APAC">
+    <h2 onclick="toggleCountry('APAC')">APAC</h2>
+    <span class="incident-count no-incident">Incidents: 0</span>
+    <div class="country no-incident-message">
+      <p>All the correspondents are running at 100%</p>
+    </div>
+  </div>
+
+</body>
+</html>
