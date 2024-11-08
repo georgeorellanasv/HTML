@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Service Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* Main Menu Styling */
+        #menu {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Menu Buttons with Rounded Corners */
+        .menu-button {
+            padding: 15px 30px;
+            margin: 0 10px;
+            border: none;
+            background-color: #0b3d91;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover Effect for Menu Buttons */
+        .menu-button:hover {
+            background-color: #335cad;
+        }
+
+        /* Container for Basic Requirements Section */
+        .requirements-container {
+            border: 1px solid gray;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        /* Enhanced Button Styling with Bank Icon */
+        .enhanced-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #E2EAF4;
+            color: #333;
+            font-size: 18px;
+            padding: 15px 20px;
+            margin: 20px auto;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 300px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Icon inside the button */
+        .enhanced-button .icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        /* Requirement Table Styling */
+        .requirement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .requirement-table th, .requirement-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .requirement-table th {
+            background-color: #f2f2f2;
+        }
+
+        /* Explanation Table Styling */
+        #explanation-table {
+            margin-top: 15px;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #explanation-table th, #explanation-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #explanation-table th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+
+        /* Container for Country Section */
+        .country-container {
+            border: 1px solid gray;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        /* Country Button Styling */
+        .country-button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background-color: #060270;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: left;
+            display: block;
+            border-radius: 5px;
+        }
+
+        /* Hover Effect for Country Buttons */
+        .country-button:hover {
+            background-color: #3c3a78;
+        }
+
+        /* Sub-section Button Styling */
+        .sub-button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: none;
+            background-color: #EE8402;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        /* Hover Effect for Sub-section Buttons */
+        .sub-button:hover {
+            background-color: #CC7409;
+        }
+
+        /* Information Section Styling */
+        .country-info, .sub-info {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        /* Section title styling */
+        .section-title {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Service Information</h1>
+
+<!-- Main Menu Section -->
+<div id="menu">
+    <button class="menu-button" onclick="showSection('bank-deposit')">Bank Deposit</button>
+    <button class="menu-button" onclick="alert('Mobile Wallet section coming soon!')">Mobile Wallet</button>
+    <button class="menu-button" onclick="alert('Cash section coming soon!')">Cash</button>
+</div>
+
+<!-- Requirements and Explanation Section Container -->
+<div class="requirements-container">
+    <!-- Explanation Table for Field Requirements -->
+    <table id="explanation-table">
+        <tr>
+            <th>Field</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>x</td>
+            <td>Correspondent Requirement</td>
+        </tr>
+        <tr>
+            <td>Regulatory*</td>
+            <td>Country Requirement</td>
+        </tr>
+        <tr>
+            <td>Operational</td>
+            <td>API Requirement</td>
+        </tr>
+    </table>
+
+    <!-- Enhanced Button with Bank Icon as Toggle for Requirements Table -->
+    <button class="enhanced-button" onclick="toggleContent('requirements')">
+        <span class="icon">🏦</span> Basic Requirements for Bank Deposits
+    </button>
+
+    <!-- Requirements Table inside the Toggle (collapsed by default) -->
+    <div id="requirements" class="toggle-content" style="display: none;">
+        <table class="requirement-table">
+            <tr>
+                <th>Field</th>
+                <th>Min Length</th>
+                <th>Max Length</th>
+                <th>Basic Requirement</th>
+            </tr>
+            <!-- Individual Sender Section -->
+            <tr class="section-title"><td colspan="4">Individual Sender (Customer) - Valid for C2C and C2B</td></tr>
+            <tr><td>Customer Name</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>Customer Name Last 1</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>ID No</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>ID Type</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>ID Issued By</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>ID Issued By Country</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>ID Expiration Date</td><td>10</td><td>10</td><td></td></tr>
+            <tr><td>Tax ID</td><td></td><td></td><td></td></tr>
+            <tr><td>Nationality</td><td>NA</td><td>2</td><td></td></tr>
+            <tr><td>Address</td><td>0</td><td>255</td><td>x</td></tr>
+            <tr><td>Zip</td><td></td><td></td><td>x*</td></tr>
+            <tr><td>City</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>State</td><td>0</td><td>20</td><td>x</td></tr>
+            <tr><td>Country</td><td>2</td><td>2</td><td>x</td></tr>
+            <tr><td>Phone</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Occupation</td><td></td><td></td><td></td></tr>
+            <tr><td>Date Of Birth</td><td>10</td><td>10</td><td>x</td></tr>
+            <tr><td>Country of Birth</td><td></td><td></td><td></td></tr>
+
+            <!-- Corporate Sender Section -->
+            <tr class="section-title"><td colspan="4">Corporate Sender (Customer) - Valid for B2C and B2B</td></tr>
+            <tr><td>Entity Name</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>Business Registration Number</td><td>1</td><td>20</td><td></td></tr>
+            <tr><td>Business Reg No Type</td><td>NA</td><td>NA</td><td></td></tr>
+            <tr><td>Business Reg Issued By Country</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Address</td><td>0</td><td>255</td><td>x</td></tr>
+            <tr><td>Zip</td><td></td><td></td><td></td></tr>
+            <tr><td>City</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>State</td><td>0</td><td>20</td><td>x</td></tr>
+            <tr><td>Country</td><td>2</td><td>2</td><td>x</td></tr>
+            <tr><td>Industry Category</td><td>NA</td><td>NA</td><td>x</td></tr>
+            <tr><td>Industry Sub Category</td><td>NA</td><td>NA</td><td>x</td></tr>
+
+            <!-- Individual Receiver Section -->
+            <tr class="section-title"><td colspan="4">Individual Receiver (Benef.) - Valid for C2C and B2C</td></tr>
+            <tr><td>Beneficiary Name</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>Beneficiary Name Last 1</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>ID No</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>ID Type</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Nationality</td><td>NA</td><td>2</td><td></td></tr>
+            <tr><td>Country of Birth</td><td>NA</td><td>2</td><td></td></tr>
+            <tr><td>Beneficiary Date Of Birth</td><td></td><td></td><td></td></tr>
+            <tr><td>Address</td><td>0</td><td>255</td><td></td></tr>
+            <tr><td>Zip</td><td></td><td></td><td></td></tr>
+            <tr><td>City</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>State</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Country</td><td>NA</td><td>2</td><td></td></tr>
+            <tr><td>Phone</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Cell</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Email Address</td><td>0</td><td>100</td><td></td></tr>
+
+            <!-- Corporate Receiver Section -->
+            <tr class="section-title"><td colspan="4">Corporate Receiver (Benef.) - Valid for C2B and B2B</td></tr>
+            <tr><td>Entity Name</td><td>1</td><td>255</td><td>x</td></tr>
+            <tr><td>Address</td><td>0</td><td>255</td><td></td></tr>
+            <tr><td>Zip</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>City</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>State</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Country</td><td>NA</td><td>2</td><td></td></tr>
+            <tr><td>Phone</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Industry Category</td><td>0</td><td>NA</td><td>x</td></tr>
+            <tr><td>Industry Sub Category</td><td>0</td><td>NA</td><td>x</td></tr>
+            <tr><td>Company Incorporation Date</td><td>8</td><td>8</td><td></td></tr>
+            <tr><td>Business Registration Number</td><td>1</td><td>50</td><td></td></tr>
+            <tr><td>Business Reg No Type</td><td>0</td><td>50</td><td></td></tr>
+
+            <!-- Transaction Section -->
+            <tr class="section-title"><td colspan="4">Transaction</td></tr>
+            <tr><td>Customer Account Number</td><td>0</td><td>50</td><td>x</td></tr>
+            <tr><td>Beneficiary Bank Account Number</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Beneficiary Unitary Account Number</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Beneficiary Bank Routing Code</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Beneficiary Bank Account Type</td><td>NA</td><td>NA</td><td></td></tr>
+            <tr><td>BIC - SWIFT</td><td>0</td><td>20</td><td></td></tr>
+            <tr><td>Beneficiary Bank Branch Name</td><td>0</td><td>100</td><td></td></tr>
+            <tr><td>Beneficiary Bank Branch Number</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Beneficiary Bank Branch City</td><td>0</td><td>50</td><td></td></tr>
+            <tr><td>Customer Payment Method</td><td>NA</td><td>NA</td><td>x</td></tr>
+            <tr><td>Reason for Transfer</td><td>0</td><td>50</td><td>x**</td></tr>
+            <tr><td>Cust-Ben Relationship Type</td><td>0</td><td>NA</td><td></td></tr>
+            <tr><td>Bene Message</td><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- Container for Country Section -->
+<div class="country-container">
+    <!-- Åland Islands Section with Sub-sections -->
+    <div>
+        <button class="country-button" onclick="toggleInfo('aland-islands')">Åland Islands</button>
+        <div id="aland-islands" class="country-info">
+
+            <!-- Individual Sender Section -->
+            <button class="sub-button" onclick="toggleSubInfo('aland-individual-sender')">1. Individual Sender (Customer) - Valid for C2C and C2B</button>
+            <div id="aland-individual-sender" class="sub-info">
+                <table class="requirement-table">
+                    <tr><th>Country</th><td>Åland Islands</td></tr>
+                    <tr><th>Correspondent Number</th><td>51938</td></tr>
+                    <tr><th>Correspondent</th><td>Ria Lithuania - SEPA Deposit</td></tr>
+                    <tr><th>Currency</th><td>EUR</td></tr>
+                    <tr><th>Customer Name</th><td>x</td></tr>
+                    <tr><th>Customer Name Last 1</th><td>x</td></tr>
+                    <tr><th>ID No</th><td></td></tr>
+                    <tr><th>ID Type</th><td></td></tr>
+                    <tr><th>ID Issued By</th><td></td></tr>
+                    <tr><th>ID Issued By Country</th><td></td></tr>
+                    <tr><th>ID Expiration Date</th><td></td></tr>
+                    <tr><th>Tax ID</th><td></td></tr>
+                    <tr><th>Nationality</th><td></td></tr>
+                    <tr><th>Address</th><td></td></tr>
+                    <tr><th>Zip</th><td></td></tr>
+                    <tr><th>City</th><td></td></tr>
+                    <tr><th>State</th><td></td></tr>
+                    <tr><th>Country</th><td></td></tr>
+                    <tr><th>Phone</th><td></td></tr>
+                    <tr><th>Occupation</th><td></td></tr>
+                    <tr><th>Date Of Birth</th><td></td></tr>
+                    <tr><th>Country of Birth</th><td></td></tr>
+                </table>
+            </div>
+
+            <!-- Corporate Sender Section -->
+            <button class="sub-button" onclick="toggleSubInfo('aland-corporate-sender')">2. Corporate Sender (Customer) - Valid for B2C and B2B</button>
+            <div id="aland-corporate-sender" class="sub-info">
+                <table class="requirement-table">
+                    <tr><th>Country</th><td>Åland Islands</td></tr>
+                    <tr><th>CorrespNo</th><td>51938</td></tr>
+                    <tr><th>Preferred Provider</th><td>Ria Lithuania - SEPA Deposit</td></tr>
+                    <tr><th>Entity Name</th><td>x</td></tr>
+                    <tr><th>Business Registration Number</th><td></td></tr>
+                    <tr><th>Business Reg No Type</th><td></td></tr>
+                    <tr><th>Business Reg Issued By Country</th><td></td></tr>
+                    <tr><th>Address</th><td></td></tr>
+                    <tr><th>Zip</th><td></td></tr>
+                    <tr><th>City</th><td></td></tr>
+                    <tr><th>State</th><td></td></tr>
+                    <tr><th>Country</th><td></td></tr>
+                    <tr><th>Industry Category</th><td></td></tr>
+                    <tr><th>Industry Sub Category</th><td></td></tr>
+                </table>
+            </div>
+
+            <!-- Individual Receiver Section -->
+            <button class="sub-button" onclick="toggleSubInfo('aland-individual-receiver')">3. Individual Receiver (Benef.) - Valid for C2C and B2C</button>
+            <div id="aland-individual-receiver" class="sub-info">
+                <table class="requirement-table">
+                    <tr><th>Country</th><td>Åland Islands</td></tr>
+                    <tr><th>Beneficiary Name</th><td>x</td></tr>
+                    <tr><th>Beneficiary Name Last 1</th><td>x</td></tr>
+                    <tr><th>ID No</th><td></td></tr>
+                    <tr><th>ID Type</th><td></td></tr>
+                    <tr><th>Nationality</th><td></td></tr>
+                    <tr><th>Country of Birth</th><td></td></tr>
+                    <tr><th>Beneficiary Date Of Birth</th><td></td></tr>
+                    <tr><th>Address</th><td></td></tr>
+                    <tr><th>Zip</th><td></td></tr>
+                    <tr><th>City</th><td></td></tr>
+                    <tr><th>State</th><td></td></tr>
+                    <tr><th>Country</th><td></td></tr>
+                    <tr><th>Phone</th><td></td></tr>
+                    <tr><th>Cell</th><td></td></tr>
+                    <tr><th>Email Address</th><td></td></tr>
+                </table>
+            </div>
+
+            <!-- Corporate Receiver Section -->
+            <button class="sub-button" onclick="toggleSubInfo('aland-corporate-receiver')">4. Corporate Receiver (Benef.) - Valid for C2B and B2B</button>
+            <div id="aland-corporate-receiver" class="sub-info">
+                <table class="requirement-table">
+                    <tr><th>Country</th><td>Åland Islands</td></tr>
+                    <tr><th>Entity Name</th><td>x</td></tr>
+                    <tr><th>Address</th><td></td></tr>
+                    <tr><th>Zip</th><td></td></tr>
+                    <tr><th>City</th><td></td></tr>
+                    <tr><th>State</th><td></td></tr>
+                    <tr><th>Country</th><td></td></tr>
+                    <tr><th>Phone</th><td></td></tr>
+                    <tr><th>Industry Category</th><td></td></tr>
+                    <tr><th>Industry Sub Category</th><td></td></tr>
+                    <tr><th>Company Incorporation Date</th><td></td></tr>
+                    <tr><th>Business Registration Number</th><td></td></tr>
+                    <tr><th>Business Reg No Type</th><td></td></tr>
+                </table>
+            </div>
+
+            <!-- Transaction Section -->
+            <button class="sub-button" onclick="toggleSubInfo('aland-transaction')">5. Transaction</button>
+            <div id="aland-transaction" class="sub-info">
+                <table class="requirement-table">
+                    <tr><th>Country</th><td>Åland Islands</td></tr>
+                    <tr><th>Customer Account Number</th><td>12345678</td></tr>
+                    <tr><th>Beneficiary Bank Account Number</th><td>87654321</td></tr>
+                    <tr><th>Beneficiary Unitary Account Number</th><td>18-18</td></tr>
+                    <tr><th>Beneficiary Bank Routing Code</th><td></td></tr>
+                    <tr><th>Beneficiary Bank Account Type</th><td></td></tr>
+                    <tr><th>BIC - SWIFT</th><td></td></tr>
+                    <tr><th>Beneficiary Bank Branch Name</th><td></td></tr>
+                    <tr><th>Beneficiary Bank Branch Number</th><td></td></tr>
+                    <tr><th>Beneficiary Bank Branch City</th><td></td></tr>
+                    <tr><th>Customer Payment Method</th><td></td></tr>
+                    <tr><th>Reason for Transfer</th><td></td></tr>
+                    <tr><th>Cust-Ben Relationship Type</th><td></td></tr>
+                    <tr><th>Bene Message</th><td></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Paste new country section here: /*/*/*/*/*/*/*/* -->
+</div>
+
+<script>
+    function showSection(sectionId) {
+        document.getElementById('country-section').style.display = 'block';
+    }
+
+    function toggleContent(contentId) {
+        var content = document.getElementById(contentId);
+        content.style.display = (content.style.display === "none" || content.style.display === "") ? "block" : "none";
+    }
+
+    function toggleInfo(countryId) {
+        var info = document.getElementById(countryId);
+        info.style.display = (info.style.display === "none" || info.style.display === "") ? "block" : "none";
+    }
+
+    function toggleSubInfo(subInfoId) {
+        var subInfo = document.getElementById(subInfoId);
+        subInfo.style.display = (subInfo.style.display === "none" || subInfo.style.display === "") ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>
