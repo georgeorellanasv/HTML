@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Service Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Estilos para el menú principal */
+        #menu {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Botones de menú con esquinas redondeadas */
+        .menu-button {
+            padding: 15px 30px;
+            margin: 0 10px;
+            border: none;
+            background-color: #0b3d91;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        /* Efecto hover para los botones de menú */
+        .menu-button:hover {
+            background-color: #335cad;
+        }
+
+        /* Sección de países oculta por defecto, se muestra al hacer clic en "Bank Deposit" */
+        #country-section {
+            display: none;
+        }
+
+        /* Barra de búsqueda para filtrar países */
+        #search-bar {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* Botones de país */
+        .country-button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background-color: #060270;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: left;
+            display: block;
+        }
+
+        /* Efecto hover para los botones de país */
+        .country-button:hover {
+            background-color: #3c3a78;
+        }
+
+        /* Información detallada de cada país, oculta por defecto */
+        .country-info {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        /* Botones para las sub-secciones dentro de cada país */
+        .sub-button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: none;
+            background-color: #EE8402;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        /* Efecto hover para los botones de sub-sección */
+        .sub-button:hover {
+            background-color: #CC7409;
+        }
+
+        /* Información detallada de cada sub-sección, oculta por defecto */
+        .sub-info {
+            display: none;
+            padding: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        /* Estilos para la tabla de detalles en cada país */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+
+        /* Estilos para la barra de búsqueda en la sub-sección */
+        .sub-search-bar {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Service Information</h1>
+
+<!-- ************************** SECCIÓN DEL MENÚ PRINCIPAL ************************** -->
+<div id="menu">
+    <!-- Botón para acceder a la sección de "Bank Deposit" -->
+    <button class="menu-button" onclick="showSection('bank-deposit')">Bank Deposit</button>
+    <!-- Botón para la sección de "Mobile Wallet", muestra un mensaje de "próximamente" -->
+    <button class="menu-button" onclick="alert('Mobile Wallet section coming soon!')">Mobile Wallet</button>
+    <!-- Botón para la sección de "Cash", muestra un mensaje de "próximamente" -->
+    <button class="menu-button" onclick="alert('Cash section coming soon!')">Cash</button>
+</div>
+<!-- ************************** FIN DE LA SECCIÓN DEL MENÚ PRINCIPAL ************************** -->
+
+<!-- ************************** SECCIÓN DE PAÍSES (BANK DEPOSIT) ************************** -->
+<div id="country-section">
+    <h2>Bank Deposit - Service Information by Country</h2>
+
+    <!-- Barra de búsqueda para filtrar países en la lista -->
+    <input type="text" id="search-bar" placeholder="Search for a country..." onkeyup="filterCountries()">
+
+    <!-- Contenedor principal de los países -->
+    <div id="countries-container">
+
+        <!-- ************************** INICIO DE LA SECCIÓN DE UN PAÍS: ÅLAND ISLANDS ************************** -->
+        <div>
+            <!-- Botón para mostrar la información de Åland Islands -->
+            <button class="country-button" onclick="toggleInfo('aland-islands')">Åland Islands</button>
+            <!-- Información detallada de Åland Islands, oculta por defecto -->
+            <div id="aland-islands" class="country-info">
+
+                <!-- Botón para mostrar información de "Individual Sender (Customer)" -->
+                <button class="sub-button" onclick="toggleSubInfo('aland-individual-sender')">1. Individual Sender (Customer) - Valid for C2C and C2B</button>
+                <!-- Información detallada de la sub-sección "Individual Sender" -->
+                <div id="aland-individual-sender" class="sub-info">
+                    <!-- Barra de búsqueda para la tabla -->
+                    <input type="text" class="sub-search-bar" placeholder="Search in titles..." onkeyup="filterTable(this, 'aland-individual-sender-table')">
+                    <p>Information about Individual Sender (C2C, C2B) for Åland Islands</p>
+                    <table id="aland-individual-sender-table">
+                        <tbody>
+                            <tr>
+                                <th>Country</th>
+                                <td>Åland Islands</td>
+                            </tr>
+                            <tr>
+                                <th>Correspondent Number</th>
+                                <td>51938</td>
+                            </tr>
+                            <tr>
+                                <th>Correspondent</th>
+                                <td>Ria Lithuania - SEPA Deposit</td>
+                            </tr>
+                            <tr>
+                                <th>Currency</th>
+                                <td>EUR</td>
+                            </tr>
+                            <tr>
+                                <th>Customer Name</th>
+                                <td>x</td>
+                            </tr>
+                            <tr>
+                                <th>Customer Name Last 1</th>
+                                <td>x</td>
+                            </tr>
+                            <tr>
+                                <th>ID No</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>ID Type</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>ID Issued By</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>ID Issued By Country</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>ID Expiration Date</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Tax ID</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Nationality</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Zip</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>State</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Country</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Phone</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Occupation</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Date Of Birth</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Country of Birth</th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Botón para mostrar información de "Corporate Sender (Customer)" -->
+                <button class="sub-button" onclick="toggleSubInfo('aland-corporate-sender')">2. Corporate Sender (Customer) - Valid for B2C and B2B</button>
+                <!-- Información detallada de la sub-sección "Corporate Sender" -->
+                <div id="aland-corporate-sender" class="sub-info">
+                    <!-- Barra de búsqueda para la tabla -->
+                    <input type="text" class="sub-search-bar" placeholder="Search in titles..." onkeyup="filterTable(this, 'aland-corporate-sender-table')">
+                    <p>Information about Corporate Sender (B2C, B2B) for Åland Islands</p>
+                    <table id="aland-corporate-sender-table">
+                        <tbody>
+                            <tr>
+                                <th>Item</th>
+                                <td>2. Corporate Sender (Customer) / Valid for B2C and B2B</td>
+                            </tr>
+                            <tr>
+                                <th>Country</th>
+                                <td>Åland Islands</td>
+                            </tr>
+                            <tr>
+                                <th>CorrespNo</th>
+                                <td>51938</td>
+                            </tr>
+                            <tr>
+                                <th>Preferred Provider</th>
+                                <td>Ria Lithuania - SEPA Deposit</td>
+                            </tr>
+                            <tr>
+                                <th>Entity Name</th>
+                                <td>x</td>
+                            </tr>
+                            <tr>
+                                <th>Business Registration Number</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Business Reg No Type</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Business Reg Issued By Country</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Zip</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>State</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Country</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Industry Category</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Industry Sub Category</th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- ************************** FIN DE LA SECCIÓN DE UN PAÍS: ÅLAND ISLANDS ************************** -->
+
+        <!-- Se pueden agregar más países en este formato -->
+
+    </div>
+</div>
+<!-- ************************** FIN DE LA SECCIÓN DE PAÍSES ************************** -->
+
+<script>
+    /* Función para mostrar la sección de países cuando se selecciona "Bank Deposit" en el menú */
+    function showSection(sectionId) {
+        if (sectionId === 'bank-deposit') {
+            document.getElementById('country-section').style.display = 'block';
+        }
+    }
+
+    /* Función para alternar la visibilidad de la información detallada de cada país */
+    function toggleInfo(countryId) {
+        var info = document.getElementById(countryId);
+        if (info.style.display === "none" || info.style.display === "") {
+            info.style.display = "block";
+        } else {
+            info.style.display = "none";
+        }
+    }
+
+    /* Función para alternar la visibilidad de cada sub-sección dentro de un país */
+    function toggleSubInfo(subInfoId) {
+        var subInfo = document.getElementById(subInfoId);
+        if (subInfo.style.display === "none" || subInfo.style.display === "") {
+            subInfo.style.display = "block";
+        } else {
+            subInfo.style.display = "none";
+        }
+    }
+
+    /* Función para filtrar filas dentro de una tabla específica en la sub-sección por título */
+    function filterTable(input, tableId) {
+        var filter = input.value.toLowerCase();
+        var table = document.getElementById(tableId);
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var th = rows[i].getElementsByTagName("th")[0]; // Buscar en la primera celda de cada fila
+            if (th) {
+                var thText = th.innerText.toLowerCase();
+                rows[i].style.display = thText.includes(filter) ? "" : "none";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
