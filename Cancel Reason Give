@@ -1,0 +1,88 @@
+WITH DistinctFEnteredBy AS (
+    -- Paso 1: Obtener los valores distintos de fEnteredBy por fOrderID y luego concatenarlos.
+    SELECT
+        fOrderID,
+        STRING_AGG(CAST(fEnteredBy_Clean AS NVARCHAR(MAX)), ', ')
+            -- WITHIN GROUP (ORDER BY fEnteredBy_Clean ASC) -- Opcional: si quieres un orden específico para los fEnteredBy concatenados
+            AS ConcatenatedFEnteredBy
+    FROM (
+        SELECT DISTINCT
+            fOrderID,
+            fEnteredBy AS fEnteredBy_Clean -- Usar un alias si el nombre original pudiera causar problemas
+        FROM [fxdb6].[dbo].[lttblOrdersComplaints]
+        -- No se filtra aquí por fOrderNo para que esta CTE sea más general;
+        -- el filtro principal se aplica después.
+    ) AS DistinctEntries
+    GROUP BY
+        fOrderID
+),
+AggregatedNotesAndOrderData AS (
+    -- Paso 2: Obtener los datos del pedido y concatenar todas las fnote.
+    SELECT
+        fx.fDate,
+        fx.fOrderNo,
+        fx.PayingAgent,
+        fx.fPayAgentID,
+        fx.fCanceledBy,
+        fx.fOrderID, -- Necesario para unir con DistinctFEnteredBy
+        STRING_AGG(CAST(co.fnote AS NVARCHAR(MAX)), ' | ')
+            -- WITHIN GROUP (ORDER BY co.TuColumnaDeOrdenDeNota ASC) -- Opcional: para ordenar las notas concatenadas
+            AS ConcatenatedFNote
+    FROM
+        [fxdb6].[dbo].[mttblOrders] AS fx
+    INNER JOIN -- Si un pedido no tiene quejas, no aparecerá. Usa LEFT JOIN si quieres incluir todos los pedidos.
+        [fxdb6].[dbo].[lttblOrdersComplaints] AS co ON co.fOrderID = fx.fOrderID
+    WHERE
+        fx.fOrderNo = 'us943009726' -- Mantén o modifica este filtro según tus necesidades.
+    GROUP BY
+        fx.fDate,
+        fx.fOrderNo,
+        fx.PayingAgent,
+        fx.fPayAgentID,
+        fx.fCanceledBy,
+        fx.fOrderID -- Asegúrate de que fOrderID esté en GROUP BY si se usa para JOIN.
+),
+ReasonExtractionInput AS (
+    -- Paso 3: Combinar las notas agregadas con los fEnteredBy distintos y agregados.
+    SELECT
+        ano.fDate,
+        ano.fOrderNo,
+        ano.PayingAgent,
+        ano.fPayAgentID,
+        ano.fCanceledBy,
+        dfeb.ConcatenatedFEnteredBy,
+        ano.ConcatenatedFNote,
+        CASE
+            WHEN ano.ConcatenatedFNote IS NOT NULL AND CHARINDEX('fxglobal webservice. reason given: ', ano.ConcatenatedFNote COLLATE SQL_Latin1_General_CP1_CI_AS) > 0
+            THEN LTRIM(RTRIM(SUBSTRING(
+                     ano.ConcatenatedFNote,
+                     CHARINDEX('fxglobal webservice. reason given: ', ano.ConcatenatedFNote COLLATE SQL_Latin1_General_CP1_CI_AS) + LEN('fxglobal webservice. reason given: '),
+                     LEN(ano.ConcatenatedFNote)
+                 )))
+            ELSE NULL
+        END AS ExtractedReasonPart
+    FROM
+        AggregatedNotesAndOrderData ano
+    LEFT JOIN -- LEFT JOIN para asegurar que los pedidos se muestren incluso si no hay un fEnteredBy (poco probable si hay notas).
+        DistinctFEnteredBy dfeb ON ano.fOrderID = dfeb.fOrderID
+)
+-- Paso 4: Seleccionar los resultados finales.
+SELECT
+    fDate,
+    fOrderNo,
+    PayingAgent,
+    fPayAgentID,
+    fCanceledBy,
+    ConcatenatedFEnteredBy,
+    ConcatenatedFNote AS AllNotes,
+    CASE
+        WHEN ExtractedReasonPart IS NULL THEN NULL
+        WHEN ExtractedReasonPart = '' THEN ''
+        ELSE
+            CASE
+                WHEN PATINDEX('%[^,]%', REVERSE(ExtractedReasonPart)) = 0 AND LEN(ExtractedReasonPart) > 0 THEN ''
+                ELSE LEFT(ExtractedReasonPart, LEN(ExtractedReasonPart) - PATINDEX('%[^,]%', REVERSE(ExtractedReasonPart)) + 1)
+            END
+    END AS reason
+FROM
+    ReasonExtractionInput;
