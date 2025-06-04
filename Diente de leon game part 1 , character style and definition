@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataformas en la Oficina - Personaje Animado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            background-color: #1e293b; /* slate-800 */
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        #game-viewport { 
+            width: 600px; 
+            height: 400px; 
+            background-color: #93c5fd; /* Color de cielo (blue-300) */
+            border: 3px solid #0c4a6e; /* Borde más oscuro (sky-800) */
+            position: relative;
+            overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        #game-world { 
+            position: absolute;
+            width: 600px; 
+            height: 400px;
+        }
+
+        /* Estilos del Jugador Antropomórfico Mejorado */
+        #player {
+            position: absolute;
+            width: 16px; 
+            height: 30px; 
+            z-index: 10;
+        }
+        .player-part {
+            position: absolute;
+            box-sizing: border-box;
+            border: 1px solid #1a1a1a; 
+        }
+
+        #player-hair {
+            width: 16px; height: 6px;
+            background-color: #4b3832; 
+            top: 0; left: 0;
+            z-index: 3; 
+        }
+        #player-face {
+            width: 12px; height: 6px; 
+            background-color: #ffcc99; 
+            top: 4px; left: 2px; 
+            z-index: 2;
+        }
+         #player-eye-left, #player-eye-right { 
+            width: 2px; height: 2px;
+            background-color: #000;
+            position: absolute;
+            top: 2px; 
+            z-index: 3;
+        }
+        #player-eye-left { left: 3px; }
+        #player-eye-right { right: 3px; }
+
+        #player-neck {
+            width: 6px; height: 2px;
+            background-color: #e6b88a; 
+            top: 10px; left: 5px; 
+            z-index: 1;
+        }
+        #player-shirt {
+            width: 16px; height: 10px;
+            background-color: #3b82f6; 
+            top: 12px; left: 0;
+            z-index: 1;
+        }
+        #player-arm-left, #player-arm-right {
+            width: 4px; height: 9px;
+            background-color: #2563eb; 
+            top: 12px; 
+            z-index: 0; 
+            transform-origin: top center;
+        }
+        #player-arm-left { left: -3px; } 
+        #player-arm-right { left: 15px; }
+
+        #player-pants {
+            width: 14px; 
+            height: 6px;
+            background-color: #312e2b; 
+            top: 22px; left: 1px; 
+            z-index: 1;
+        }
+        #player-shoe-left, #player-shoe-right {
+            width: 7px; height: 2px;
+            background-color: #1c1917; 
+            top: 28px; /* Posición base del zapato */
+            z-index: 2;
+        }
+        #player-leg-left, #player-leg-right { /* Añadido para controlar las piernas directamente */
+            width: 8px;
+            height: 8px;
+            background-color: #312e2b; /* Mismo color que los pantalones o ligeramente diferente */
+            top: 16px; /* Posición base de la pierna */
+            /* border: none; /* Sin borde si es parte del pantalón */
+        }
+        #player-leg-left { left: 0; }
+        #player-leg-right { left: 8px; }
+        #player-shoe-left { left: 1px; } /* Ajustado para estar sobre la pierna izquierda */
+        #player-shoe-right { left: 8px; }/* Ajustado para estar sobre la pierna derecha */
+
+
+        /* Animaciones del Jugador */
+        @keyframes player-idle-bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+        }
+        #player.player-idle { 
+            animation: player-idle-bob 1.2s ease-in-out infinite;
+        }
+
+        @keyframes player-walk-arm-swing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(20deg); } /* Aumentar un poco el balanceo */
+        }
+        #player.player-walking #player-arm-left {
+            animation: player-walk-arm-swing 0.4s linear infinite alternate;
+        }
+        #player.player-walking #player-arm-right {
+            animation: player-walk-arm-swing 0.4s linear infinite alternate-reverse;
+        }
+
+        @keyframes leg-step-animation {
+            0%   { top: 15px; /* Pierna arriba */ }
+            50%  { top: 17px; /* Pierna abajo (paso) */ }
+            100% { top: 15px; }
+        }
+        @keyframes shoe-step-animation {
+            0%   { top: 27px; /* Zapato sigue a la pierna arriba */ }
+            50%  { top: 29px; /* Zapato sigue a la pierna abajo */ }
+            100% { top: 27px; }
+        }
+
+        #player.player-walking #player-leg-left {
+            animation: leg-step-animation 0.4s linear infinite;
+        }
+        #player.player-walking #player-shoe-left {
+            animation: shoe-step-animation 0.4s linear infinite;
+        }
+        #player.player-walking #player-leg-right {
+            animation: leg-step-animation 0.4s linear infinite;
+            animation-delay: 0.2s; /* Desfase para la otra pierna */
+        }
+        #player.player-walking #player-shoe-right {
+            animation: shoe-step-animation 0.4s linear infinite;
+            animation-delay: 0.2s; /* Desfase para el otro zapato */
+        }
+
+
+        #player.player-jumping #player-shirt {
+            transform: scaleY(0.9) translateY(1px); 
+        }
+        #player.player-jumping #player-pants { /* Aplicar también a las piernas */
+            transform: scaleY(0.8) translateY(1px); 
+        }
+        #player.player-jumping #player-leg-left,
+        #player.player-jumping #player-leg-right {
+            top: 17px; 
+            height: 7px;
+        }
+         #player.player-jumping #player-shoe-left,
+         #player.player-jumping #player-shoe-right {
+            top: 29px; /* Ajustar si la pierna cambia de altura */
+        }
+        #player.player-jumping #player-arm-left {
+            transform: rotate(-45deg) translateY(-2px); /* Brazos más levantados */
+        }
+        #player.player-jumping #player-arm-right {
+            transform: rotate(45deg) translateY(-2px);
+        }
+
+
+        .platform {
+            position: absolute;
+            background-color: #4ade80; 
+            border: 2px solid #15803d; 
+            border-radius: 2px;
+            z-index: 5;
+        }
+        .goal { 
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #facc15; 
+            border: 2px solid #ca8a04; 
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        #ui-container {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #334155; 
+            border-radius: 8px;
+            width: 600px;
+            text-align: center;
+            color: #e2e8f0; 
+        }
+        #message {
+            min-height: 20px;
+            font-size: 0.9rem;
+        }
+        .controls-info {
+            font-size: 0.8rem;
+            color: #94a3b8; 
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body class="bg-slate-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <h1 class="text-3xl font-bold text-slate-200 mb-6">Plataformas en la Oficina</h1>
+
+    <div id="game-viewport">
+        <div id="game-world">
+            <div id="player" style="left: 50px; top: 300px;">
+                <div class="player-part" id="player-hair"></div>
+                <div class="player-part" id="player-face">
+                    <div class="player-part" id="player-eye-left"></div>
+                    <div class="player-part" id="player-eye-right"></div>
+                </div>
+                <div class="player-part" id="player-neck"></div>
+                <div class="player-part" id="player-shirt"></div>
+                <div class="player-part" id="player-arm-left"></div>
+                <div class="player-part" id="player-arm-right"></div>
+                <!-- <div class="player-part" id="player-pants"></div> No es necesario si las piernas son del mismo color -->
+                <div class="player-part" id="player-leg-left"></div>
+                <div class="player-part" id="player-leg-right"></div>
+                <div class="player-part" id="player-shoe-left"></div>
+                <div class="player-part" id="player-shoe-right"></div>
+            </div>
+
+            <div class="platform" style="left: 0px; top: 350px; width: 600px; height: 50px;"></div>
+            <div class="platform" style="left: 150px; top: 280px; width: 100px; height: 20px;"></div>
+            <div class="platform" style="left: 300px; top: 220px; width: 120px; height: 20px;"></div>
+            <div class="platform" style="left: 450px; top: 150px; width: 80px; height: 20px;"></div>
+            <div class="platform" style="left: 50px; top: 120px; width: 100px; height: 20px;"></div>
+
+            <div class="goal" style="left: 550px; top: 110px;">🏁</div>
+        </div>
+    </div>
+
+    <div id="ui-container">
+        <p id="message"></p>
+        <div class="controls-info">
+            Flechas Izquierda/Derecha o A/D: Mover | Flecha Arriba o W o Espacio: Saltar
+        </div>
+    </div>
+
+    <script>
+        let player;
+        let platforms = [];
+        let goal;
+        let keyManager;
+        let gameViewport; 
+        let gameWorld;    
+
+        const gravity = 0.5; 
+        const jumpForce = 10; 
+        const playerSpeed = 3; 
+        // walkCycleCounter ya no es necesario con las animaciones CSS continuas
+
+        class KeyManager {
+            constructor() {
+                this.keys = {};
+                window.addEventListener('keydown', (e) => this.setKey(e.key, true));
+                window.addEventListener('keyup', (e) => this.setKey(e.key, false));
+            }
+            setKey(key, pressed) {
+                this.keys[key.toLowerCase()] = pressed;
+            }
+            isKeyPressed(key) {
+                return !!this.keys[key.toLowerCase()];
+            }
+        }
+
+        class Player {
+            constructor(x, y) {
+                this.element = document.getElementById('player');
+                if (!this.element) {
+                    console.error("Elemento del jugador no encontrado.");
+                    return;
+                }
+                this.x = x;
+                this.y = y;
+                this.width = 16; 
+                this.height = 30; 
+                this.velocityX = 0;
+                this.velocityY = 0;
+                this.isJumping = false;
+                this.isOnPlatform = false;
+
+                this.element.style.width = `${this.width}px`;
+                this.element.style.height = `${this.height}px`;
+                this.updateElementPosition();
+            }
+
+            applyGravity() {
+                if (!this.isOnPlatform) {
+                    this.velocityY += gravity;
+                }
+            }
+
+            jump() {
+                if (this.isOnPlatform) {
+                    this.velocityY = -jumpForce;
+                    this.isJumping = true; 
+                    this.isOnPlatform = false; 
+                }
+            }
+
+            move(direction) { 
+                this.velocityX = direction * playerSpeed;
+            }
+
+            updateAnimationState() {
+                this.element.classList.remove('player-idle', 'player-walking', 'player-jumping');
+
+                if (!this.isOnPlatform) { 
+                    this.element.classList.add('player-jumping');
+                } else { 
+                    if (this.velocityX !== 0) {
+                        this.element.classList.add('player-walking');
+                    } else {
+                        this.element.classList.add('player-idle');
+                    }
+                }
+            }
+
+
+            update(platforms) {
+                this.applyGravity();
+
+                let newX = this.x + this.velocityX;
+                const worldWidth = gameWorld.offsetWidth;
+                if (newX < 0) newX = 0;
+                if (newX + this.width > worldWidth) newX = worldWidth - this.width;
+
+                let tempRectX = { x: newX, y: this.y, width: this.width, height: this.height };
+                for (const platform of platforms) {
+                    if (this.checkCollision(tempRectX, platform)) {
+                        if (this.velocityX > 0) newX = platform.x - this.width;
+                        else if (this.velocityX < 0) newX = platform.x + platform.width;
+                        this.velocityX = 0; 
+                        break;
+                    }
+                }
+                this.x = newX;
+
+                let newY = this.y + this.velocityY;
+                this.isOnPlatform = false; 
+
+                let tempRectY = { x: this.x, y: newY, width: this.width, height: this.height };
+                for (const platform of platforms) {
+                    if (this.checkCollision(tempRectY, platform)) {
+                        if (this.velocityY > 0) { 
+                            newY = platform.y - this.height;
+                            this.isOnPlatform = true;
+                            this.isJumping = false; 
+                            this.velocityY = 0;
+                        } else if (this.velocityY < 0) { 
+                            newY = platform.y + platform.height;
+                            this.velocityY = 0; 
+                        }
+                        break; 
+                    }
+                }
+                this.y = newY;
+
+                const worldHeight = gameWorld.offsetHeight;
+                if (this.y + this.height >= worldHeight) { 
+                    this.y = worldHeight - this.height;
+                    this.isOnPlatform = true; 
+                    this.isJumping = false; 
+                    this.velocityY = 0;
+                }
+                
+                this.updateElementPosition();
+                this.updateAnimationState(); 
+            }
+
+            checkCollision(rect1, rect2) {
+                return rect1.x < rect2.x + rect2.width &&
+                       rect1.x + rect1.width > rect2.x &&
+                       rect1.y < rect2.y + rect2.height &&
+                       rect1.y + rect1.height > rect2.y;
+            }
+
+            updateElementPosition() {
+                if(this.element){
+                    this.element.style.left = `${this.x}px`;
+                    this.element.style.top = `${this.y}px`;
+                }
+            }
+        }
+
+        class Platform {
+            constructor(element) {
+                this.element = element;
+                this.x = element.offsetLeft;
+                this.y = element.offsetTop;
+                this.width = element.offsetWidth;
+                this.height = element.offsetHeight;
+            }
+        }
+
+        class Goal {
+            constructor(element) {
+                this.element = element;
+                this.x = element.offsetLeft;
+                this.y = element.offsetTop;
+                this.width = element.offsetWidth;
+                this.height = element.offsetHeight;
+            }
+        }
+
+        function initGame() {
+            console.log("Initializing game elements...");
+            gameViewport = document.getElementById('game-viewport');
+            gameWorld = document.getElementById('game-world');
+            
+            const playerElement = document.getElementById('player'); 
+            if (!playerElement) {
+                 console.error("CRITICAL: Player HTML element not found during init.");
+                 return false;
+            }
+            const playerStartX = parseFloat(playerElement.style.left || '50');
+            const playerStartY = parseFloat(playerElement.style.top || '300');
+            player = new Player(playerStartX, playerStartY);
+
+            document.querySelectorAll('.platform').forEach(el => {
+                platforms.push(new Platform(el));
+            });
+
+            const goalElement = document.querySelector('.goal');
+            if (goalElement) {
+                goal = new Goal(goalElement);
+            }
+
+            keyManager = new KeyManager();
+
+            if (!player || !player.element || platforms.length === 0 || !gameWorld || !gameViewport) {
+                 console.error("Error crítico: Faltan elementos esenciales del juego para inicializar.");
+                 document.getElementById('message').textContent = "Error al cargar el juego.";
+                 return false;
+            }
+            console.log("Game elements initialized.");
+            return true;
+        }
+
+        function handleInput() {
+            if (!player || !keyManager) return;
+
+            if (keyManager.isKeyPressed('arrowleft') || keyManager.isKeyPressed('a')) {
+                player.move(-1);
+            } else if (keyManager.isKeyPressed('arrowright') || keyManager.isKeyPressed('d')) {
+                player.move(1);
+            } else {
+                player.move(0); 
+            }
+
+            if (keyManager.isKeyPressed('arrowup') || keyManager.isKeyPressed('w') || keyManager.isKeyPressed(' ')) {
+                player.jump();
+            }
+        }
+
+        function checkGoalCollision() {
+            if (player && goal && player.checkCollision(player, goal)) {
+                document.getElementById('message').textContent = "¡Nivel Completado!";
+            }
+        }
+
+        let animationFrameId;
+        function gameLoop() {
+            if (!gameInitialized) return; 
+
+            handleInput();
+            if(player) player.update(platforms); 
+            checkGoalCollision();
+            
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+        
+        let gameInitialized = false;
+        window.onload = () => {
+            if (initGame()) {
+                gameInitialized = true;
+                const messageEl = document.getElementById('message');
+                if(messageEl) {
+                    messageEl.textContent = "¡Juego Cargado! Usa las flechas para moverte y saltar.";
+                    setTimeout(() => {
+                        if(messageEl.textContent === "¡Juego Cargado! Usa las flechas para moverte y saltar.") {
+                            messageEl.textContent = "";
+                        }
+                    }, 3000);
+                }
+                gameLoop(); 
+            }
+        };
+
+    </script>
+</body>
+</html>
